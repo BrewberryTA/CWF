@@ -26,6 +26,9 @@ a:hover{color:var(--bone)}
 nav{display:flex;flex-wrap:wrap;gap:4px 22px}
 nav a{white-space:nowrap;margin-left:0;color:var(--ash);text-decoration:none;font-size:1.05rem}
 nav a:first-child{margin-left:0}
+.mail{text-align:center;margin:1.2em 0}
+.mail-link{font-size:clamp(1.2rem,3.4vw,1.6rem);color:var(--gold);word-break:break-all}
+.note{color:var(--ash);font-size:.95rem;text-align:center}
 .idea h2{margin-bottom:.15em}
 .idea .who{text-align:center;color:var(--ash);font-size:.92rem;margin:0 0 1.4em}
 .big{font-size:1.15rem;color:var(--gold);text-align:center;margin:1.4em auto;max-width:28em;line-height:1.6}
@@ -245,36 +248,15 @@ footer p{margin:0 0 .3em}
 <section class="part col" id="apply">
   <div class="mark still" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 7 L41 37 L7 37 Z" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M15 27 Q24 19 33 27 Q24 35 15 27 Z" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="24" cy="27" r="2.4" fill="#B39250"/></svg></div>
   <h2>Ask to join</h2>
-  <p>Tell us why you want to join. We read every application and reply by email.</p>
-  <!-- Replace YOUR_FORM_ID with the ID of your Formspree form -->
-  <form id="apply-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-    <div><label for="name">Name</label><input id="name" name="name" type="text" autocomplete="name" required></div>
-    <div><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
-    <div><label for="why">Why do you want to join?</label><textarea id="why" name="why" required></textarea></div>
-    <input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">
-    <button type="submit">Send application</button>
-    <p class="status" id="status" role="status" aria-live="polite"></p>
-  </form>
+  <p>Write to us and tell us why you want to join. We read every letter and reply by email with an invitation and the meeting details.</p>
+  <p class="mail"><a id="mail" class="mail-link" href="#">barleybrew [at] gmail [dot] com</a></p>
+  <p class="note">The link opens your email with the subject filled in.</p>
 </section>
 <script>
 (function(){
-  var form=document.getElementById('apply-form'), status=document.getElementById('status');
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    status.className='status';
-    if(form.action.indexOf('YOUR_FORM_ID')!==-1){
-      status.textContent="The form isn’t connected yet. Add your Formspree form ID to send applications.";
-      return;
-    }
-    var btn=form.querySelector('button'); btn.disabled=true; status.textContent='Sending your application…';
-    fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}})
-      .then(function(r){
-        if(r.ok){form.reset(); status.className='status ok'; status.textContent="Application sent. We’ll reply by email.";}
-        else{status.textContent="Your application didn’t send. Check each field and try again.";}
-      })
-      .catch(function(){status.textContent="Your application didn’t send. Check your connection and try again.";})
-      .finally(function(){btn.disabled=false;});
-  });
+  var u='barleybrew', d='gmail.com', a=document.getElementById('mail');
+  a.textContent=u+'@'+d;
+  a.href='mailto:'+u+'@'+d+'?subject='+encodeURIComponent('Application to join');
 })();
 </script>
 
