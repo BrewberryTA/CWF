@@ -27,6 +27,9 @@ nav{display:flex;flex-wrap:wrap;gap:4px 22px}
 nav a{white-space:nowrap;margin-left:0;color:var(--ash);text-decoration:none;font-size:1.05rem}
 nav a:first-child{margin-left:0}
 .mail{text-align:center;margin:1.2em 0}
+.muse{font-size:clamp(1.25rem,3.2vw,1.8rem);line-height:1.45;color:var(--bone);text-align:center;max-width:22em;margin:24px auto 64px;padding:0 8px}
+.muse::before{content:"";display:block;width:12px;height:12px;margin:0 auto 18px;border:1px solid var(--gold);border-radius:50%;background:radial-gradient(circle,var(--gold) 0 2px,transparent 2.5px)}
+section .muse{margin:8px auto 28px;font-size:clamp(1.15rem,2.8vw,1.5rem)}
 .mail-link{font-size:clamp(1.2rem,3.4vw,1.6rem);color:var(--gold);word-break:break-all}
 .note{color:var(--ash);font-size:.95rem;text-align:center}
 .idea h2{margin-bottom:.15em}
@@ -219,7 +222,7 @@ footer p{margin:0 0 .3em}
     <circle cx="200" cy="200" r="160" fill="none" stroke="#B39250" stroke-width="1.2"/></svg>
 </svg>
   <h1>Important Conversations with Fools</h1>
-  <p class="motto">Say the thing you’ve never said.</p>
+  <p class="motto">What are the odds the world is exactly as you think it is?</p>
   <p class="lede">A weekly gathering in Flagstaff for the most important conversations you’ll ever have, the ones no one else is having.</p>
 </div></section>
 <div class="wrap">
@@ -230,6 +233,7 @@ footer p{margin:0 0 .3em}
   <p>Important Conversations with Fools is a social club that comes together to talk about what matters. Seek advice. Find support. Meet new people. Think deeply, and challenge what you believe about your own life and about the world.</p>
   <p>Bring the thing you’ve never said out loud, or the thing about the world nobody seems willing to talk about. This is the place for it.</p>
 </section>
+<p class="muse">How much of what you believe did you ever check for yourself?</p>
 <section class="part col">
   <div class="mark r" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="7" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="31.00" cy="24.00" r="7" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="27.50" cy="30.06" r="7" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="20.50" cy="30.06" r="7" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="17.00" cy="24.00" r="7" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="20.50" cy="17.94" r="7" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="27.50" cy="17.94" r="7" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="24" cy="24" r="14" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
   <h2>Why fools</h2>
@@ -245,9 +249,11 @@ footer p{margin:0 0 .3em}
     <li>Coming is always voluntary, and there is no cost.</li>
   </ul>
 </section>
+<p class="muse">Some things go unsaid so long they start to shape the person carrying them.</p>
 <section class="part col" id="apply">
   <div class="mark still" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 7 L41 37 L7 37 Z" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M15 27 Q24 19 33 27 Q24 35 15 27 Z" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="24" cy="27" r="2.4" fill="#B39250"/></svg></div>
   <h2>Ask to join</h2>
+  <p class="muse">Every unsaid thing is a conversation you’re still having alone.</p>
   <p>Write to us and tell us why you want to join. We read every letter and reply by email with an invitation and the meeting details.</p>
   <p class="mail"><a id="mail" class="mail-link" href="#">barleybrew [at] gmail [dot] com</a></p>
   <p class="note">The link opens your email with the subject filled in.</p>
