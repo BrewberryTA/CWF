@@ -54,6 +54,27 @@ var BELOW = {
 
 var WHY_END = "That’s the one worth saying out loud, to people who’ll listen to all of it.";
 
+// The edges of the map (Home). One per sea monster, in order: name, question, note.
+var MAP_MONSTERS = [
+  {name:"The hard problem", q:"Why is there something it is like to be you?", n:"Science can map what the brain does. Nobody can yet say why any of it is felt from the inside."},
+  {name:"The dark", q:"What is most of the universe made of?", n:"Ordinary matter is about five percent of it. The rest has names, dark matter and dark energy, but names aren’t answers."},
+  {name:"The first question", q:"Why is there something rather than nothing?", n:"Every answer anyone has offered starts with something already there."},
+  {name:"The chooser", q:"Do you choose, or does it only feel that way?", n:"Every decision you make rests on an answer nobody has."},
+  {name:"The spark", q:"How did chemistry become life?", n:"Life began here somehow. How lifeless matter first started copying itself is still unknown."},
+  {name:"The arrow", q:"Why does time only run one way?", n:"Most of the basic laws of physics work the same forward and backward. Your life doesn’t."}
+];
+
+// Easter eggs.
+var EYE_WHISPER = "Some things are easier to see with your eyes closed.";      // after blinking the eye three times
+var FOOL_WORD = "You said the word. Every important conversation starts at zero."; // typing "fool"
+var STARS_LABEL = "THE FOOL";                                                       // the hidden constellation
+// Holding the footer seal for seven seconds. DRAFT: replace with Steve's own question.
+var FOUNDER = {
+  eyebrow: "From the founder",
+  question: "What would you have to stop pretending in order to tell the whole truth?",
+  sign: "The first fool"
+};
+
 /* --------------------------------------------------------------------------------------- */
 (function(){
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -204,7 +225,7 @@ var WHY_END = "That’s the one worth saying out loud, to people who’ll listen
         busy = false;
       }, DUR + 30);
     }
-    b.addEventListener('click', turn);
+    b.addEventListener('click', function(){ if (b.dataset.suppress){ delete b.dataset.suppress; return; } turn(); });
     $('.bm-back', below).addEventListener('click', turn);
     $('.bm-stay', below).addEventListener('click', function(){ below.hidden = true; b.focus(); });
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !below.hidden) below.hidden = true; });
@@ -229,5 +250,177 @@ var WHY_END = "That’s the one worth saying out loud, to people who’ll listen
     }
     window.addEventListener('scroll', function(){ if (!ticking){ ticking = true; requestAnimationFrame(draw); } }, {passive:true});
     draw();
+  })();
+})();
+
+/* --------------------------------------------------------------------------------------- */
+/* The map with edges, and the easter eggs */
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var NS = 'http://www.w3.org/2000/svg';
+  function $(s,r){return (r||document).querySelector(s)}
+  function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))}
+  function el(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
+  function svgel(tag,attrs){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);return e}
+  function cls(e,c,on){var v=(e.getAttribute('class')||'').split(/\s+/).filter(function(x){return x&&x!==c});if(on)v.push(c);e.setAttribute('class',v.join(' '))}
+  function toast(text, ms){
+    var t = el('div','toast',text); document.body.appendChild(t);
+    setTimeout(function(){ t.classList.add('go'); }, ms||4200);
+    setTimeout(function(){ t.remove(); }, (ms||4200)+900);
+  }
+
+  /* The edges of the map */
+  (function(){
+    var box = $('#edges'); if (!box) return;
+    var name=$('.mq-name',box), q=$('.mq-q',box), n=$('.mq-n',box), mons=$$('.mon',box);
+    function pick(m){
+      mons.forEach(function(x){ cls(x,'on',x===m); });
+      var d = MAP_MONSTERS[+m.getAttribute('data-i')]; if (!d) return;
+      name.textContent = d.name; q.textContent = d.q; n.textContent = d.n;
+      box.querySelector('.mapq').classList.remove('fresh'); void box.offsetWidth; box.querySelector('.mapq').classList.add('fresh');
+    }
+    mons.forEach(function(m){
+      m.addEventListener('click', function(){ pick(m); });
+      m.addEventListener('keydown', function(e){ if (e.key==='Enter'||e.key===' '){ e.preventDefault(); pick(m); } });
+    });
+  })();
+
+  /* The eye opens: follows the cursor, blinks when clicked */
+  (function(){
+    var eye = $('.geo .eye'); if (!eye) return;
+    var parts = eye.children, lid = null, pupil = null;
+    for (var i=0;i<parts.length;i++){ var t=parts[i]; if (t.tagName==='path' && /Q400/.test(t.getAttribute('d')||'')) lid=t; if (t.tagName==='circle' && t.getAttribute('r')==='2.0') pupil=t; }
+    if (!lid || !pupil) return;
+    var lookG = svgel('g',{}); pupil.parentNode.insertBefore(lookG,pupil); lookG.appendChild(pupil);
+    var blinkG = svgel('g',{'class':'blink'}); lid.parentNode.insertBefore(blinkG,lid); blinkG.appendChild(lid); blinkG.appendChild(lookG);
+    var hit = svgel('circle',{cx:400,cy:54,r:26,fill:'transparent','class':'eyehit',tabindex:'0',role:'button','aria-label':'The eye'});
+    eye.appendChild(hit);
+    var geo = $('.geo');
+    if (!reduce) document.addEventListener('pointermove', function(e){
+      var m = geo.getScreenCTM(); if (!m) return;
+      var p = geo.createSVGPoint(); p.x=e.clientX; p.y=e.clientY; p = p.matrixTransform(m.inverse());
+      var dx=p.x-400, dy=p.y-55, d=Math.sqrt(dx*dx+dy*dy)||1;
+      lookG.setAttribute('transform','translate(' + (dx/d*3.6).toFixed(2) + ' ' + (dy/d*1.6).toFixed(2) + ')');
+    }, {passive:true});
+    var blinks = 0;
+    function blink(){
+      cls(blinkG,'shut',false); void blinkG.getBoundingClientRect(); cls(blinkG,'shut',true);
+      setTimeout(function(){ cls(blinkG,'shut',false); }, 260);
+      if (++blinks === 3) setTimeout(function(){ toast(EYE_WHISPER); }, 400);
+    }
+    hit.addEventListener('click', blink);
+    hit.addEventListener('keydown', function(e){ if (e.key==='Enter'||e.key===' '){ e.preventDefault(); blink(); } });
+  })();
+
+  /* The serpent eats: click the ouroboros and it races around, swallowing its tail */
+  (function(){
+    var serp = $('.geo .serpent'); if (!serp) return;
+    var hit = svgel('circle',{cx:200,cy:200,r:186,fill:'none',stroke:'transparent','stroke-width':'22','class':'serphit',tabindex:'0',role:'button','aria-label':'The serpent'});
+    serp.appendChild(hit);
+    var seal = $('.geo .seal'), busy=false;
+    function eat(){
+      if (busy) return; busy = true;
+      cls(serp,'feeding',true); cls(seal,'glow',true);
+      setTimeout(function(){ cls(serp,'feeding',false); cls(seal,'glow',false); busy=false; }, reduce ? 600 : 3400);
+    }
+    hit.addEventListener('click', eat);
+    hit.addEventListener('keydown', function(e){ if (e.key==='Enter'||e.key===' '){ e.preventDefault(); eat(); } });
+  })();
+
+  /* Day and night: the sun in the seal brings day, the moon brings night */
+  (function(){
+    var seal = $('.geo .seal'); if (!seal) return;
+    var root = document.documentElement;
+    try { if (sessionStorage.getItem('fools-light')==='day') root.classList.add('day'); } catch(e){}
+    function set(day){
+      root.classList.toggle('day', day);
+      try { sessionStorage.setItem('fools-light', day ? 'day' : 'night'); } catch(e){}
+    }
+    var sun = svgel('circle',{cx:286,cy:102,r:24,fill:'transparent','class':'lighthit',tabindex:'0',role:'button','aria-label':'The sun: bring the day'});
+    var moon = svgel('circle',{cx:112,cy:106,r:22,fill:'transparent','class':'lighthit',tabindex:'0',role:'button','aria-label':'The moon: bring the night'});
+    seal.appendChild(sun); seal.appendChild(moon);
+    [[sun,true],[moon,false]].forEach(function(p){
+      p[0].addEventListener('click', function(e){ e.stopPropagation(); set(p[1]); });
+      p[0].addEventListener('keydown', function(e){ if (e.key==='Enter'||e.key===' '){ e.preventDefault(); set(p[1]); } });
+    });
+  })();
+
+  /* Type "fool" anywhere (outside a text box) and the zero card falls */
+  (function(){
+    var buf = '';
+    document.addEventListener('keydown', function(e){
+      var t = e.target; if (t && (t.tagName==='TEXTAREA' || t.tagName==='INPUT' || t.isContentEditable)) return;
+      if (!e.key || e.key.length !== 1) return;
+      buf = (buf + e.key.toLowerCase()).slice(-4);
+      if (buf === 'fool'){
+        buf = '';
+        var c = el('div','fallcard'); c.setAttribute('role','status');
+        c.innerHTML = '<span class="fz">0</span><span class="fn">THE FOOL</span><span class="fl"></span>';
+        c.querySelector('.fl').textContent = FOOL_WORD;
+        document.body.appendChild(c);
+        setTimeout(function(){ c.classList.add('go'); }, 6500);
+        setTimeout(function(){ c.remove(); }, 7600);
+        c.addEventListener('click', function(){ c.remove(); });
+      }
+    });
+  })();
+
+  /* Stars that connect: linger near them and a fool constellation draws itself */
+  (function(){
+    var sky = $('svg.sky'); if (!sky) return;
+    // A walking figure with a staff over his shoulder and a dog at his heel.
+    var P = [[868,520],[878,548],[872,590],[858,632],[884,632],[852,566],[900,560],[906,508],[928,488],[838,652],[828,640]];
+    var L = [[0,1],[1,2],[2,3],[2,4],[1,5],[1,6],[6,7],[7,8],[3,9],[9,10]];
+    var g = svgel('g',{'class':'constel'});
+    L.forEach(function(l){ g.appendChild(svgel('line',{x1:P[l[0]][0],y1:P[l[0]][1],x2:P[l[1]][0],y2:P[l[1]][1],pathLength:'1'})); });
+    P.forEach(function(p){ g.appendChild(svgel('circle',{cx:p[0],cy:p[1],r:'1.6'})); });
+    var t = svgel('text',{x:'878',y:'690','text-anchor':'middle'}); t.textContent = STARS_LABEL; g.appendChild(t);
+    sky.appendChild(g);
+    var timer = null, shown = false;
+    function near(x,y){
+      var m = sky.getScreenCTM(); if (!m) return false;
+      var p = sky.createSVGPoint(); p.x=x; p.y=y; p = p.matrixTransform(m.inverse());
+      return Math.abs(p.x-876) < 90 && Math.abs(p.y-580) < 120;
+    }
+    function check(x,y){
+      if (near(x,y)){ if (!timer && !shown) timer = setTimeout(function(){ shown = true; cls(g,'on',true); }, 900); }
+      else { clearTimeout(timer); timer = null; if (shown){ shown = false; cls(g,'on',false); } }
+    }
+    document.addEventListener('pointermove', function(e){ check(e.clientX,e.clientY); }, {passive:true});
+    document.addEventListener('pointerdown', function(e){ check(e.clientX,e.clientY); }, {passive:true});
+  })();
+
+  /* A note in the console for anyone who opens it */
+  try {
+    console.log('%c0  THE FOOL', 'font-family:Cinzel,Georgia,serif;font-size:20px;color:#B39250;letter-spacing:.2em');
+    console.log('%cYou opened the back of the clock to see how it works. That instinct is the whole point of this room.\nWhat else have you taken apart lately?\n\nIf you want in, write to us and mention the console.', 'font-family:Georgia,serif;font-size:13px;color:#A0957F;line-height:1.6');
+  } catch(e){}
+
+  /* Hold the seal for seven seconds: the founder's question */
+  (function(){
+    var b = $('footer .turn'); if (!b) return;
+    var ring = svgel('svg',{'class':'holdring',viewBox:'0 0 100 100','aria-hidden':'true'});
+    ring.appendChild(svgel('circle',{cx:50,cy:50,r:48,pathLength:'1'}));
+    b.appendChild(ring);
+    var msg = el('div','belowmsg founder'); msg.hidden = true; msg.setAttribute('role','dialog'); msg.setAttribute('aria-label',FOUNDER.eyebrow);
+    msg.innerHTML = '<div class="bm-in"><p class="bm-latin"></p><p class="bm-line"></p><p class="bm-sign"></p><p class="bm-row"><button type="button" class="again">Close</button></p></div>';
+    $('.bm-latin',msg).textContent = FOUNDER.eyebrow; $('.bm-line',msg).textContent = FOUNDER.question; $('.bm-sign',msg).textContent = '— ' + FOUNDER.sign;
+    document.body.appendChild(msg);
+    $('.again',msg).addEventListener('click', function(){ msg.hidden = true; b.focus(); });
+    document.addEventListener('keydown', function(e){ if (e.key==='Escape') msg.hidden = true; });
+    var timer=null, start=0;
+    b.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+    b.addEventListener('pointerdown', function(e){
+      if (e.button && e.button !== 0) return;
+      start = Date.now(); b.classList.add('holding');
+      timer = setTimeout(function(){ b.classList.remove('holding'); b.dataset.suppress = '1'; msg.hidden = false; $('.again',msg).focus(); timer = null; }, 7000);
+    });
+    function stop(){
+      if (!start) return;
+      var held = Date.now() - start; start = 0;
+      b.classList.remove('holding');
+      if (timer){ clearTimeout(timer); timer = null; if (held > 600) b.dataset.suppress = '1'; }
+    }
+    b.addEventListener('pointerup', stop); b.addEventListener('pointerleave', stop); b.addEventListener('pointercancel', stop);
   })();
 })();
