@@ -45,6 +45,13 @@ var WHY_FOLLOWUPS = [
   "Where did that come from?",
   "What would it cost you if it turned out to be wrong?"
 ];
+// As above, so below: the secret message found by turning the page over (footer seal).
+var BELOW = {
+  line: "And that which is below is like that which is above.",
+  body: "You turned the world over to see what was underneath. Most people never do. Nothing here has changed. You’re only seeing it from the other side, and that is the whole idea.",
+  question: "If the world outside is a mirror of the world inside, what is yours showing you?"
+};
+
 var WHY_END = "That’s the one worth saying out loud, to people who’ll listen to all of it.";
 
 /* --------------------------------------------------------------------------------------- */
@@ -151,15 +158,56 @@ var WHY_END = "That’s the one worth saying out loud, to people who’ll listen
     var page = el('div','page'), kids = Array.prototype.slice.call(document.body.children);
     document.body.insertBefore(page, document.body.firstChild);
     kids.forEach(function(k){ if (!k.classList.contains('sky') && k.tagName !== 'SCRIPT') page.appendChild(k); });
-    b.addEventListener('click', function(){
-      function flip(){
-        var inv = root.classList.toggle('inverted');
-        window.scrollTo(0, inv ? 0 : document.documentElement.scrollHeight);
+    // The secret message, shown right side up once the page is turned over.
+    var below = el('div','belowmsg'); below.hidden = true;
+    below.setAttribute('role','dialog'); below.setAttribute('aria-label','As above, so below');
+    below.innerHTML = '<div class="bm-in">'
+      + '<p class="bm-latin">ET QVOD INFERIVS EST SICVT QVOD EST SVPERIVS</p>'
+      + '<p class="bm-line">' + BELOW.line + '</p>'
+      + '<p>' + BELOW.body + '</p>'
+      + '<p class="bm-q">' + BELOW.question + '</p>'
+      + '<p class="bm-row"><button type="button" class="bm-back">Turn it back</button> <button type="button" class="again bm-stay">Stay below a while</button></p>'
+      + '</div>';
+    document.body.appendChild(below);
+    var inverted = false, busy = false, DUR = reduce ? 0 : 1300;
+
+    // Turn around the middle of the screen so whatever you're looking at stays in view.
+    function turn(){
+      if (busy) return; busy = true;
+      var s = window.scrollY, vh = window.innerHeight, H = page.offsetHeight;
+      page.style.transition = 'none';
+      if (!inverted){
+        page.style.transformOrigin = '50% ' + (s + vh/2) + 'px';
+        page.style.transform = 'rotate(0deg)';
+      } else {
+        var p = H - (s + vh/2);
+        page.style.transformOrigin = '50% ' + p + 'px';
+        page.style.transform = 'rotate(180deg)';
+        window.scrollTo(0, p - vh/2);
+        below.hidden = true; root.classList.remove('inverted');
       }
-      if (reduce){ flip(); return; }
-      root.classList.add('turning');
-      setTimeout(function(){ flip(); root.classList.remove('turning'); }, 380);
-    });
+      void page.offsetWidth;
+      page.style.transition = DUR ? 'transform ' + DUR + 'ms cubic-bezier(.65,0,.25,1)' : 'none';
+      page.style.transform = inverted ? 'rotate(0deg)' : 'rotate(180deg)';
+      setTimeout(function(){
+        page.style.transition = 'none';
+        if (!inverted){
+          // Re-anchor on the page's own center so the whole upside-down page can still be scrolled.
+          page.style.transformOrigin = '50% 50%';
+          window.scrollTo(0, H - s - vh);
+          inverted = true; root.classList.add('inverted');
+          below.hidden = false; $('.bm-back', below).focus();
+        } else {
+          page.style.transform = ''; page.style.transformOrigin = '';
+          inverted = false; b.focus();
+        }
+        busy = false;
+      }, DUR + 30);
+    }
+    b.addEventListener('click', turn);
+    $('.bm-back', below).addEventListener('click', turn);
+    $('.bm-stay', below).addEventListener('click', function(){ below.hidden = true; b.focus(); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !below.hidden) below.hidden = true; });
   })();
 
   /* The ring turns as you scroll */

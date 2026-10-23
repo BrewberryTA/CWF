@@ -55,10 +55,15 @@
 .turn{display:block;margin:0 auto 18px;padding:0;background:none;border:0;border-radius:50%;cursor:pointer;color:var(--gold-dim);justify-self:auto}
 .turn:hover{background:none;color:var(--gold)}
 .turn .below{margin:0}
-body{transition:opacity .35s ease}
-html.turning body{opacity:0}
 .page{position:relative;z-index:1}
-html.inverted .page{transform:rotate(180deg)}
+.belowmsg{position:fixed;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(18,15,11,.82);animation:bmin 1s ease both}
+.belowmsg[hidden]{display:none}
+.bm-in{max-width:30em;text-align:center;border:1px solid var(--gold-dim);background:var(--ink);padding:34px 26px 26px;border-radius:4px;box-shadow:0 0 60px rgba(179,146,80,.12)}
+.bm-latin{color:var(--gold-dim);font-size:.8rem;letter-spacing:.14em;margin:0 0 1.2em}
+.bm-line{font-size:clamp(1.25rem,3.4vw,1.6rem);line-height:1.4;color:var(--gold);margin-bottom:.9em}
+.bm-q{color:var(--bone);font-size:1.15rem;line-height:1.5;margin-top:1.2em}
+.bm-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:1.4em 0 0}
+@keyframes bmin{from{opacity:0}to{opacity:1}}
 
 @media (prefers-reduced-motion:reduce){
   .geo .today{animation:none}
@@ -69,6 +74,6 @@ html.inverted .page{transform:rotate(180deg)}
   .card.up .face.front{display:flex}
   .card.up .card-in{transform:none}
   .burn .ashes span{animation:fadeout .8s ease var(--d,0s) forwards}
-  body{transition:none}
+  .belowmsg{animation:none}
 }
 @keyframes fadeout{to{opacity:0}}
