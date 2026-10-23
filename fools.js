@@ -34,16 +34,17 @@ var PLANET_DAYS = [
   {day:"Saturday",  planet:"Saturn",  q:"What limit have you accepted that was never really yours?"}
 ];
 
-// One more why (The Fool). One opening is picked at random; the follow-ups go deeper in order.
+// Take it apart (The Fool). One opening is picked at random; the follow-ups ask HOW, not WHY.
+// Explaining how something works exposes the gaps; being asked to justify it tends to dig people in.
 var WHY_OPENINGS = [
   "What’s something you believe that most people around you don’t?",
-  "What’s a choice you’ve made that you’d defend to anyone?",
+  "What’s something about how the world works that you’d bet on?",
   "What’s something you’re sure of about the world?"
 ];
 var WHY_FOLLOWUPS = [
-  "Why do you believe that?",
-  "Where did that come from?",
-  "What would it cost you if it turned out to be wrong?"
+  "How does that actually work? Walk through it step by step.",
+  "How did you come to know that? Trace it back to where you first got it.",
+  "Now, how well do you really understand it, compared to when you started?"
 ];
 // As above, so below: the secret message found by turning the page over (footer seal).
 var BELOW = {
@@ -52,7 +53,7 @@ var BELOW = {
   question: "If the world outside is a mirror of the world inside, what is yours showing you?"
 };
 
-var WHY_END = "That’s the one worth saying out loud, to people who’ll listen to all of it.";
+var WHY_END = "The gap between what you thought you knew and what you could explain is the edge of your map. That’s a conversation worth having out loud.";
 
 // The edges of the map (Home). One per sea monster, in order: name, question, note.
 var MAP_MONSTERS = [
@@ -68,10 +69,10 @@ var MAP_MONSTERS = [
 var EYE_WHISPER = "Some things are easier to see with your eyes closed.";      // after blinking the eye three times
 var FOOL_WORD = "You said the word. Every important conversation starts at zero."; // typing "fool"
 var STARS_LABEL = "THE FOOL";                                                       // the hidden constellation
-// Holding the footer seal for seven seconds. DRAFT: replace with Steve's own question.
+// Holding the footer seal for seven seconds: the founder's question.
 var FOUNDER = {
   eyebrow: "From the founder",
-  question: "What would you have to stop pretending in order to tell the whole truth?",
+  question: "What if there is a reason you’re alive, and finding it is the whole point?",
   sign: "The first fool"
 };
 
@@ -147,7 +148,7 @@ var FOUNDER = {
     $('.again', after).addEventListener('click', function(){ after.hidden = true; stage.hidden = false; ta.focus(); });
   })();
 
-  /* One more why */
+  /* Take it apart */
   (function(){
     var box = $('#why'); if (!box) return;
     var trail = $('.trail', box), ask = $('.ask', box), ta = $('textarea', box), go = $('#why-go'), stage = $('.stage', box), end = $('.end', box), step = 0;
