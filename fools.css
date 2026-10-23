@@ -1,0 +1,74 @@
+/* Interactive pieces: card draw, today's planet, burn box, why chain, page turn, scroll ring */
+
+/* Today's planet (all pages) */
+.geo .today > .upright > circle{stroke:var(--gold);stroke-width:1.6;filter:drop-shadow(0 0 5px rgba(179,146,80,.85))}
+.geo .today > .upright > g{stroke:var(--bone)}
+.geo .today{animation:breathe 4s ease-in-out infinite}
+.dayline{max-width:30em;margin:1.1em auto 0;color:var(--ash);font-size:1rem;line-height:1.6}
+.dayline b{font-weight:400;color:var(--gold)}
+.dayline .dq{display:block;color:var(--bone);margin-top:.25em}
+
+/* Draw a card (Home) */
+.draw{text-align:center}
+.card{display:block;margin:6px auto 22px;width:min(100%,300px);aspect-ratio:5/8;perspective:1200px;background:none;border:0;padding:0;cursor:pointer;color:inherit;font:inherit;font-weight:400}
+.card:hover{background:none}
+.card-in{position:relative;display:block;width:100%;height:100%;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.3,.1,.2,1)}
+.card.up .card-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:26px 22px;border:1px solid var(--gold);border-radius:6px;background:var(--ink-2);backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:inset 0 0 0 6px var(--ink-2),inset 0 0 0 7px var(--gold-dim)}
+.face.back .zero{font-size:4rem;line-height:1;color:var(--gold)}
+.face.back .nm{letter-spacing:.3em;color:var(--bone);font-size:.95rem}
+.face.back .tap{color:var(--ash);font-size:.85rem}
+.face.back svg{width:92px;height:92px;color:var(--gold-dim)}
+.face.front{transform:rotateY(180deg)}
+.face.front .q{font-size:clamp(1.2rem,3.6vw,1.45rem);line-height:1.45;color:var(--bone)}
+.face.front .zero{font-size:1.4rem;color:var(--gold)}
+.again{background:none;color:var(--gold);border:1px solid var(--gold-dim);justify-self:auto}
+.again:hover{background:none;color:var(--bone);border-color:var(--gold)}
+.draw .hint{color:var(--ash);font-size:.92rem;margin-top:.8em}
+
+/* Say it and let it burn (Home) */
+.burn textarea{min-height:140px}
+.burn .ashes{min-height:140px;padding:12px 14px;border:1px solid var(--ink-2);border-radius:2px;font-size:1.1rem;line-height:1.7;white-space:pre-wrap;word-break:break-word;color:var(--bone)}
+.burn .ashes span{display:inline-block;white-space:pre;animation:ember 1.6s ease-in var(--d,0s) forwards}
+@keyframes ember{
+  0%{color:var(--bone);transform:none;opacity:1;filter:none}
+  30%{color:#E2B25A;text-shadow:0 0 8px #C97B2A}
+  60%{color:#8A4A1E;text-shadow:0 0 4px #5a2a10}
+  100%{color:#3a332a;transform:translateY(-26px) rotate(var(--r,0deg));opacity:0;filter:blur(2px)}
+}
+.burn .row{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;margin-top:16px}
+.burn .after{text-align:center;margin-top:20px}
+.burn .after p{margin:0 0 .6em}
+.privacy{color:var(--ash);font-size:.9rem;margin:0}
+
+/* One more why (The Fool) */
+.why .trail{margin:0 0 18px;padding:0;list-style:none}
+.why .trail li{color:var(--ash);font-size:.95rem;padding:8px 0 8px 16px;border-left:1px solid var(--gold-dim);margin-left:4px;opacity:.75}
+.why .trail li span{display:block;color:var(--bone);opacity:.7;font-size:.92rem;white-space:pre-wrap;word-break:break-word}
+.why .ask{font-size:clamp(1.2rem,3vw,1.45rem);color:var(--gold);line-height:1.45;margin:0 0 14px}
+.why textarea{min-height:110px}
+.why .row{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px}
+.why .end{text-align:center}
+.why .end .ask{color:var(--bone)}
+
+/* As above, so below (footer seal) */
+.turn{display:block;margin:0 auto 18px;padding:0;background:none;border:0;border-radius:50%;cursor:pointer;color:var(--gold-dim);justify-self:auto}
+.turn:hover{background:none;color:var(--gold)}
+.turn .below{margin:0}
+body{transition:opacity .35s ease}
+html.turning body{opacity:0}
+.page{position:relative;z-index:1}
+html.inverted .page{transform:rotate(180deg)}
+
+@media (prefers-reduced-motion:reduce){
+  .geo .today{animation:none}
+  .card-in{transition:none}
+  .face{backface-visibility:visible}
+  .card .face.front{display:none;transform:none}
+  .card.up .face.back{display:none}
+  .card.up .face.front{display:flex}
+  .card.up .card-in{transform:none}
+  .burn .ashes span{animation:fadeout .8s ease var(--d,0s) forwards}
+  body{transition:none}
+}
+@keyframes fadeout{to{opacity:0}}
