@@ -65,6 +65,14 @@ var MAP_MONSTERS = [
   {name:"The arrow", q:"Why does time only run one way?", n:"Most of the basic laws of physics work the same forward and backward. Your life doesn’t."}
 ];
 
+// Say it without "is" (The Fool). Example rewrites shown on request.
+var NORIS_EXAMPLES = [
+  ["He is lazy.", "He didn’t finish his part, and I had to pick it up."],
+  ["She is rude.", "She didn’t say hello this morning, and it stung."],
+  ["My boss is impossible.", "My boss changed the plan twice this week, and I felt dismissed."],
+  ["They are selfish.", "They took the last of it without asking, and I felt invisible."]
+];
+
 // Easter eggs.
 var EYE_WHISPER = "Some things are easier to see with your eyes closed.";      // after blinking the eye three times
 var FOOL_WORD = "You said the word. Every important conversation starts at zero."; // typing "fool"
@@ -424,4 +432,35 @@ var FOUNDER = {
     }
     b.addEventListener('pointerup', stop); b.addEventListener('pointerleave', stop); b.addEventListener('pointercancel', stop);
   })();
+})();
+
+/* Say it without "is" */
+(function(){
+  var box = document.getElementById('noris'); if (!box) return;
+  function $(q){ return box.querySelector(q); }
+  var BE = /\b(?:is|isn['’]t|are|aren['’]t|was|wasn['’]t|were|weren['’]t|am|be|been|being|(?:he|she|it|that|there|what|who|here|this)['’]s|\w+['’](?:re|m))\b/gi;
+  function esc(t){ return t.replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function mark(t){ var n = 0; var html = esc(t).replace(/\b(?:is|isn(?:'|&#39;|’)t|are|aren(?:'|’)t|was|wasn(?:'|’)t|were|weren(?:'|’)t|am|be|been|being|(?:he|she|it|that|there|what|who|here|this)(?:'|’)s|\w+(?:'|’)(?:re|m))\b/gi, function(m){ n++; return '<mark>' + m + '</mark>'; }); return {html:html, n:n}; }
+  var a = $('#noris-a'), b = $('#noris-b'), s1 = $('.s1'), s2 = $('.s2'), s3 = $('.s3'), nudge = $('.nudge'), ex = 0;
+  $('#noris-find').addEventListener('click', function(){
+    var t = a.value.trim(); if (!t){ a.focus(); return; }
+    var m = mark(t);
+    $('.said').innerHTML = m.html;
+    $('.hint-line').textContent = m.n
+      ? (m.n === 1 ? 'There it is. That one word turns a moment into who someone is.' : 'There they are. Each one turns a moment into who someone is.')
+      : 'No “is” in that one. Look for a word doing the same job, like “always,” “never” or a label.';
+    s1.hidden = true; s2.hidden = false; nudge.textContent = ''; b.value = ''; b.focus();
+  });
+  $('#noris-ex').addEventListener('click', function(){
+    var e = NORIS_EXAMPLES[ex++ % NORIS_EXAMPLES.length];
+    nudge.innerHTML = 'For example: “' + esc(e[0]) + '” becomes “' + esc(e[1]) + '”';
+  });
+  $('#noris-done').addEventListener('click', function(){
+    var t = b.value.trim(); if (!t){ b.focus(); return; }
+    var m = mark(t);
+    if (m.n){ nudge.innerHTML = 'Still one in there: ' + m.html; return; }
+    $('.before').textContent = a.value.trim(); $('.after').textContent = t;
+    s2.hidden = true; s3.hidden = false; $('#noris-again').focus();
+  });
+  $('#noris-again').addEventListener('click', function(){ a.value = ''; b.value = ''; s3.hidden = true; s1.hidden = false; a.focus(); });
 })();

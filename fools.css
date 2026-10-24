@@ -118,6 +118,21 @@ html{transition:filter 1.2s ease}
 .turn.holding .holdring circle{stroke-dashoffset:0;opacity:1;transition:stroke-dashoffset 6.4s linear .6s,opacity .3s .6s}
 .bm-sign{color:var(--ash);font-size:.95rem;letter-spacing:.08em}
 
+
+/* Say it without "is" (The Fool) */
+.noris .ask{display:block;font-size:clamp(1.15rem,3vw,1.35rem);color:var(--gold);line-height:1.45;margin:0 0 12px}
+.noris textarea{min-height:90px}
+.noris textarea::placeholder{color:var(--gold-dim)}
+.noris .row{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px}
+.noris .said{font-size:clamp(1.2rem,3.2vw,1.45rem);color:var(--bone);line-height:1.5;margin-bottom:.4em}
+.noris mark{background:none;color:var(--gold);border-bottom:2px solid var(--gold);padding:0 2px}
+.noris .hint-line,.noris .nudge{color:var(--ash);font-size:.98rem}
+.noris .nudge{margin-top:14px}
+.noris .pair{border-left:1px solid var(--gold-dim);padding-left:18px;margin:4px 0 22px}
+.noris .lab{color:var(--gold-dim);font-size:.82rem;letter-spacing:.18em;margin:0}
+.noris .before{color:var(--ash);text-decoration:line-through;text-decoration-color:var(--gold-dim)}
+.noris .after{color:var(--bone);font-size:1.15rem}
+
 @media (prefers-reduced-motion:reduce){
   .geo .today{animation:none}
   .card-in{transition:none}
