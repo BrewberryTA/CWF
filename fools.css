@@ -148,3 +148,12 @@ html{transition:filter 1.2s ease}
   html{transition:none}
 }
 @keyframes fadeout{to{opacity:0}}
+
+/* Explore: the rest of the home page opens on demand */
+.explore-wrap{text-align:center;padding:8px 0 56px}
+.explore{justify-self:auto;background:none;color:var(--gold);border:1px solid var(--gold-dim);padding:14px 40px;letter-spacing:.14em;text-transform:uppercase}
+.explore:hover{background:none;color:var(--bone);border-color:var(--gold)}
+.explore::after{content:"";display:inline-block;width:7px;height:7px;margin-left:14px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:translateY(-3px) rotate(45deg)}
+.more.open{animation:moreIn .9s ease-out both}
+@keyframes moreIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.more.open{animation:none}}

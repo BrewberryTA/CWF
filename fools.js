@@ -464,3 +464,29 @@ var FOUNDER = {
   });
   $('#noris-again').addEventListener('click', function(){ a.value = ''; b.value = ''; s3.hidden = true; s1.hidden = false; a.focus(); });
 })();
+
+/* Explore: reveal the rest of the home page; open automatically for #links into it */
+(function(){
+  var btn = document.getElementById('explore'), more = document.getElementById('more');
+  if (!btn || !more) return;
+  function open(scroll){
+    if (more.hidden){
+      more.hidden = false; more.classList.add('open');
+      btn.setAttribute('aria-expanded','true'); btn.parentNode.hidden = true;
+    }
+    if (scroll) more.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  function fromHash(){
+    var id = location.hash.slice(1); if (!id) return;
+    var t = document.getElementById(id);
+    if (t && more.contains(t)){ open(false); setTimeout(function(){ t.scrollIntoView(); }, 0); }
+  }
+  btn.addEventListener('click', function(){ open(true); });
+  window.addEventListener('hashchange', fromHash);
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href*="#"]'); if (!a) return;
+    var u = new URL(a.href, location.href);
+    if (u.pathname === location.pathname && u.hash && u.hash === location.hash) fromHash();
+  });
+  fromHash();
+})();
